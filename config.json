@@ -1,0 +1,22 @@
+{
+    "networks": [
+		{
+			"id": 1,
+			"name": "ethereum"
+		}
+	],
+	"exchanges": [
+		{
+			"address": "0x...",
+			"networks": [1],
+			"name": "Uniswap"
+		}
+	],
+	"token_pairs": [
+		{
+			"token_in": "0x...",
+			"token_out": "0x...",
+            "pool_address": ""
+		}
+	]
+}

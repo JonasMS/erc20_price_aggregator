@@ -1,45 +1,45 @@
-use serde::{Deserialize, Serialize};
-use serde_json;
-use std::fs;
+use std::collections::HashMap;
+use crate::config::get_config;
+mod config;
 
-#[derive(Serialize, Deserialize)]
-struct Network {
-    id: u64,
-    name: String,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Exchange {
-    address: String,
-    networks: Vec<u64>,
-    name: String,
-}
-
-#[derive(Serialize, Deserialize)]
+#[derive(Debug)]
 struct TokenPair {
     token_in: String,
     token_out: String,
-    pool_address: String,
+    networks: Vec<u64>,
 }
 
-#[derive(Serialize, Deserialize)]
-struct Config {
-    networks: Vec<Network>,
-    exchanges: Vec<Exchange>,
-    token_pairs: Vec<TokenPair>,
+#[derive(Debug)]
+struct Exchange {
+    token_pairs: Vec<TokenPair>
 }
 
 fn main() {
-    // read config file
-    let config_data = fs::read_to_string("./config.json").expect("Failed to read config file.");
-    let config: Config = serde_json::from_str(&config_data).expect("Failed to parse config.");
+    let config = get_config();
 
-    println!(
-        "NETWORK: {}, {}",
-        config.networks[0].id, config.networks[0].name
-    );
+    /* Construct HashMap of Exchanges */
+    let mut exchanges = HashMap::new();
+    
+    for exchange in config.exchanges {
+        let mut exchange_token_pairs = Vec::new();
 
-    // for every exchange
+        for token_pair in &config.token_pairs {
+                if token_pair.exchanges.contains(&exchange.id) {
+                exchange_token_pairs.push(TokenPair {
+                    token_in: token_pair.token_in.clone(),
+                    token_out: token_pair.token_out.clone(),
+                    networks: token_pair.networks.clone()
+                });
+            }
+        }
+
+        exchanges.insert(exchange.id, Exchange {
+            token_pairs: exchange_token_pairs
+        });
+    }
+
+    println!("EXCHANGES MAP: {:?}", exchanges.get(&0));
+    
     // for every network
     // for every token
     // fetch and print price

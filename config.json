@@ -7,6 +7,7 @@
 	],
 	"exchanges": [
 		{
+            "id": 0,
 			"address": "0x...",
 			"networks": [1],
 			"name": "Uniswap"
@@ -16,7 +17,8 @@
 		{
 			"token_in": "0x...",
 			"token_out": "0x...",
-            "pool_address": ""
+            "exchanges": [0],
+            "networks": [1]        
 		}
 	]
 }

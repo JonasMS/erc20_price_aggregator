@@ -16,12 +16,20 @@ pub struct Exchange {
     pub name: String,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Pool {
+    pub network_id: u64,
+    pub exchange_id: u64,
+    pub fee: Option<f32>,
+}
+
+// TODO create Address type
+
 #[derive(Serialize, Deserialize)]
 pub struct TokenPair {
     pub token_in: String,
     pub token_out: String,
-    pub exchanges: Vec<u64>,
-    pub networks: Vec<u64>
+    pub pools: Vec<Pool>,
 }
 
 #[derive(Serialize, Deserialize)]

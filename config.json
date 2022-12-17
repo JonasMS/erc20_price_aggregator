@@ -15,10 +15,15 @@
 	],
 	"token_pairs": [
 		{
-			"token_in": "0x...",
-			"token_out": "0x...",
-            "exchanges": [0],
-            "networks": [1]        
+			"token_in": "WETH",
+			"token_out": "USDC",
+            "pools": [
+                {
+                    "network_id": 1,
+                    "exchange_id": 0,
+                    "fee": 0.03
+                }
+            ]
 		}
 	]
 }

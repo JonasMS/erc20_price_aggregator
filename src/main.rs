@@ -1,46 +1,14 @@
-use std::collections::HashMap;
 use crate::config::get_config;
+use crate::rate_query_factory::get_rate_queries;
+// use crate::exchange::get_erc20_address;
 mod config;
-
-#[derive(Debug)]
-struct TokenPair {
-    token_in: String,
-    token_out: String,
-    networks: Vec<u64>,
-}
-
-#[derive(Debug)]
-struct Exchange {
-    token_pairs: Vec<TokenPair>
-}
+mod rate_query_factory;
+// mod exchange;
 
 fn main() {
+    // let (config, erc20_addresses_map) = get_config();
     let config = get_config();
+    let rate_queries = get_rate_queries(&config.token_pairs);
 
-    /* Construct HashMap of Exchanges */
-    let mut exchanges = HashMap::new();
-    
-    for exchange in config.exchanges {
-        let mut exchange_token_pairs = Vec::new();
-
-        for token_pair in &config.token_pairs {
-                if token_pair.exchanges.contains(&exchange.id) {
-                exchange_token_pairs.push(TokenPair {
-                    token_in: token_pair.token_in.clone(),
-                    token_out: token_pair.token_out.clone(),
-                    networks: token_pair.networks.clone()
-                });
-            }
-        }
-
-        exchanges.insert(exchange.id, Exchange {
-            token_pairs: exchange_token_pairs
-        });
-    }
-
-    println!("EXCHANGES MAP: {:?}", exchanges.get(&0));
-    
-    // for every network
-    // for every token
-    // fetch and print price
+    println!("Rate Queries: {:?}", rate_queries);
 }

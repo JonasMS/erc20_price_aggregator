@@ -77,7 +77,7 @@ fn get_token(token_symbol: &str) -> Token {
 */
 pub fn get_rate_queries(token_pairs: &Vec<TokenPair>) -> Vec<RateQuery> {
     let mut rate_queries: Vec<RateQuery> = Vec::new();
-    let mut token_symbol_to_address_map = get_token_symbol_to_address_map();
+    let token_symbol_to_address_map = get_token_symbol_to_address_map();
 
     // for each pool in a token pair
     // create a RateQuery

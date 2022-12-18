@@ -1,9 +1,10 @@
 use crate::config::get_config;
 use crate::exchange::get_exchange_rates;
 use crate::rate_query_factory::get_rate_queries;
+
 mod config;
+mod exchange;
 mod rate_query_factory;
-// mod exchange;
 
 fn main() {
     let config = get_config();
@@ -11,4 +12,5 @@ fn main() {
     let exchange_rates = get_exchange_rates(&rate_queries);
 
     println!("Rate Queries: {:?}", rate_queries);
+    println!("Exchange Rates: {:?}", exchange_rates);
 }

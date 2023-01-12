@@ -23,6 +23,7 @@ pub enum Token {
 pub struct Pool {
     pub network: Network,
     pub exchange: Exchange,
+    pub address: Option<String>,
     pub fee: Option<f32>,
 }
 
@@ -101,7 +102,8 @@ pub fn get_rate_queries(token_pairs: &Vec<TokenPair>) -> Vec<RateQuery> {
                 pool: Pool {
                     network: get_network(&pool.network_id),
                     exchange: get_exchange(&pool.exchange_id),
-                    fee: Some(pool.fee.clone().unwrap_or(0.0)),
+                    address: pool.address.clone(),
+                    fee: pool.fee.clone(),
                 },
             });
         }

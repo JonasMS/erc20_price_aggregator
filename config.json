@@ -21,7 +21,9 @@
                 {
                     "network_id": 1,
                     "exchange_id": 0,
+                    "address": "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8",
                     "fee": 0.03
+
                 }
             ]
 		}

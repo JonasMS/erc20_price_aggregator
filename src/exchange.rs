@@ -17,9 +17,9 @@ pub async fn get_exchange_rates(rate_queries: &Vec<RateQuery>) -> Vec<ExchangeRa
         match rate_query.pool.exchange {
             Exchange::Uniswap => match uniswap::get_exchange_rate(rate_query).await {
                 Ok(exchange_rate) => exchange_rates.push(exchange_rate),
-                Err(E) => (), // TODO push error to list of errors, push errorful ExchangeRate to exchange_rates
+                Err(_e) => (), // TODO push error to list of errors, push errorful ExchangeRate to exchange_rates
             },
-            _ => panic!("Invalid exchange: {:?}", rate_query.pool.exchange),
+            // _ => panic!("Invalid exchange: {:?}", rate_query.pool.exchange),
         }
     }
 

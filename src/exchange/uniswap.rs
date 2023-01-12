@@ -2,10 +2,7 @@ use crate::exchange::ExchangeRate;
 use crate::rate_query_factory::RateQuery;
 use ethers::{
     contract::abigen,
-    core::{
-        abi::{AbiDecode, ParseError},
-        types::{Address, Bytes},
-    },
+    core::types::Address,
     providers::{Http, Provider},
 };
 use std::env;
@@ -28,9 +25,9 @@ pub async fn get_exchange_rate(
     let address = "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8".parse::<Address>()?;
     let pool = IUniswapV3Pool::new(address, Arc::clone(&client));
 
-    let (sqrtPriceX96, a, b, c, d, e, f) = pool.slot_0().call().await?;
+    let (sqrt_price_x96, _a, _b, _c, _d, _e, _f) = pool.slot_0().call().await?;
 
-    println!("sqrtPriceX96: {}", sqrtPriceX96);
+    println!("sqrtPriceX96: {}", sqrt_price_x96);
 
     // println!("RESULT: {}", result.await.unwrap());
     Ok(ExchangeRate {

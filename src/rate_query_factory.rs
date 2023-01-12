@@ -4,13 +4,13 @@ use std::collections::HashMap;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Network {
     Ethereum,
-    Polygon,
-    Abitrum,
+    // Polygon,
+    // Abitrum,
 }
 #[derive(Debug, Copy, Clone)]
 pub enum Exchange {
     Uniswap,
-    Balancer,
+    // Balancer,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

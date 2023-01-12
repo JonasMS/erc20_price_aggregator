@@ -1,7 +1,10 @@
+use dotenv::dotenv;
 use price_aggregator::config::get_config;
 
 #[async_std::main]
 async fn main() {
+    dotenv().ok();
+
     let config = get_config();
 
     println!("CONFIG: {:?}", config);

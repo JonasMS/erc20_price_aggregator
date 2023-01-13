@@ -1,7 +1,7 @@
 use dotenv::dotenv;
 use price_aggregator::config::get_config;
 
-#[async_std::main]
+#[tokio::main]
 async fn main() {
     dotenv().ok();
 

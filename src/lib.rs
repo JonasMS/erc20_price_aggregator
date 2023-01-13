@@ -10,9 +10,9 @@ pub async fn run(config: Config) -> () {
     println!("EXECUTING run()");
 
     let rate_queries = get_rate_queries(&config.token_pairs);
-    println!("Rate Queries: {:?}", rate_queries);
+    println!("RATE QUERIES: {:?}", rate_queries);
 
     let exchange_rates = get_exchange_rates(&rate_queries).await;
 
-    println!("Exchange Rates: {:?}", exchange_rates);
+    println!("EXCHANGE RATES: {:?}", exchange_rates);
 }

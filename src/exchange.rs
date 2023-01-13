@@ -1,4 +1,5 @@
 use crate::rate_query_factory::{Exchange, RateQuery};
+use ethers::core::types::U256;
 // use std::fmt;
 
 mod uniswap;
@@ -6,7 +7,7 @@ mod uniswap;
 #[derive(Debug)]
 pub struct ExchangeRate<'a> {
     pub query: &'a RateQuery,
-    pub rate: u64,
+    pub rate: U256,
 }
 
 pub async fn get_exchange_rates(rate_queries: &Vec<RateQuery>) -> Vec<ExchangeRate> {

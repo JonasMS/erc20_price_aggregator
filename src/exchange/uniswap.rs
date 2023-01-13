@@ -2,7 +2,7 @@ use crate::exchange::ExchangeRate;
 use crate::rate_query_factory::RateQuery;
 use ethers::{
     contract::abigen,
-    core::types::Address,
+    core::types::{Address, U256},
     providers::{Http, Provider},
 };
 use std::env;
@@ -27,11 +27,37 @@ pub async fn get_exchange_rate(
 
     let (sqrt_price_x96, _a, _b, _c, _d, _e, _f) = pool.slot_0().call().await?;
 
-    println!("sqrtPriceX96: {}", sqrt_price_x96);
+    let decimal_difference = rate_query
+        .token_in
+        .decimals
+        .abs_diff(rate_query.token_out.decimals);
+    let decimal_difference = U256([decimal_difference; 4]);
+
+    let p = sqrt_price_x96
+        .checked_div(
+            U256([2; 4])
+                .checked_pow(U256([96; 4]))
+                .ok_or("Error getting p denominator")?,
+        )
+        .ok_or("Error getting p")?;
+
+    let price = U256([1; 4])
+        .checked_div(p)
+        .ok_or("Error getting 1/p")?
+        .checked_mul(
+            U256([10; 4])
+                .checked_pow(decimal_difference)
+                .ok_or("Error getting 2 ** decimal_difference")?,
+        )
+        .ok_or("Error multiplying by decimal difference")?;
+    // * (2 * *(rate_query.token_in.decimals - rate_query.token_out.decimals).abs());
+
+    println!("SQRT_PRICE_X96: {}", sqrt_price_x96);
+    println!("PRICE: {}", price);
 
     // println!("RESULT: {}", result.await.unwrap());
     Ok(ExchangeRate {
         query: rate_query,
-        rate: 1000,
+        rate: price,
     })
 }

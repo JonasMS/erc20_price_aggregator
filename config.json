@@ -15,8 +15,14 @@
 	],
 	"token_pairs": [
 		{
-			"token_in": "WETH",
-			"token_out": "USDC",
+			"token_in": {
+				"symbol": "WETH",
+				"decimals": 18
+			},
+			"token_out": {
+				"symbol": "USDC",
+				"decimals": 6
+			},
             "pools": [
                 {
                     "network_id": 1,

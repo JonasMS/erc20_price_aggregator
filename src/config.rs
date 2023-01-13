@@ -24,11 +24,16 @@ pub struct Pool {
 }
 
 // TODO create Address type
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Token {
+    pub symbol: String,
+    pub decimals: u64,
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TokenPair {
-    pub token_in: String,
-    pub token_out: String,
+    pub token_in: Token,
+    pub token_out: Token,
     pub pools: Vec<Pool>,
 }
 

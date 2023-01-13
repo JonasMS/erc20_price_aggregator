@@ -31,31 +31,31 @@ pub async fn get_exchange_rate(
         .token_in
         .decimals
         .abs_diff(rate_query.token_out.decimals);
-    let decimal_difference = U256([decimal_difference; 4]);
+    let decimal_difference = U256::from(decimal_difference);
 
+    /* == Exchange Rate Formula ==
+     * Price = 1/P * (10 ** decimal_difference)
+     * where P = (sqrtPriceX96 / 2**96)**2
+     *
+     * Translates to:
+     * Price = (10 ** decimal_difference / P)
+     */
     let p = sqrt_price_x96
         .checked_div(
-            U256([2; 4])
-                .checked_pow(U256([96; 4]))
+            U256::from(2)
+                .checked_pow(U256::from(96))
                 .ok_or("Error getting p denominator")?,
         )
-        .ok_or("Error getting p")?;
+        .ok_or("Error getting p")?
+        .checked_pow(U256::from(2))
+        .ok_or("Error squaring p")?;
 
-    let price = U256([1; 4])
+    let price = U256::from(10)
+        .checked_pow(decimal_difference)
+        .ok_or("Error getting 2 ** decimal_difference")?
         .checked_div(p)
-        .ok_or("Error getting 1/p")?
-        .checked_mul(
-            U256([10; 4])
-                .checked_pow(decimal_difference)
-                .ok_or("Error getting 2 ** decimal_difference")?,
-        )
-        .ok_or("Error multiplying by decimal difference")?;
-    // * (2 * *(rate_query.token_in.decimals - rate_query.token_out.decimals).abs());
+        .ok_or("Error dividing by p")?;
 
-    println!("SQRT_PRICE_X96: {}", sqrt_price_x96);
-    println!("PRICE: {}", price);
-
-    // println!("RESULT: {}", result.await.unwrap());
     Ok(ExchangeRate {
         query: rate_query,
         rate: price,

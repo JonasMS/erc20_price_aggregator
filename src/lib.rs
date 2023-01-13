@@ -12,7 +12,8 @@ pub async fn run(config: Config) -> () {
     let rate_queries = get_rate_queries(&config.token_pairs);
     println!("RATE QUERIES: {:?}", rate_queries);
 
-    let exchange_rates = get_exchange_rates(&rate_queries).await;
+    let (exchange_rates, errors) = get_exchange_rates(&rate_queries).await;
 
     println!("EXCHANGE RATES: {:?}", exchange_rates);
+    println!("ERRORS: {:?}", errors);
 }

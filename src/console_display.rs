@@ -1,4 +1,5 @@
 use crate::exchange::ExchangeRate;
+use num_format::{Locale, ToFormattedString};
 use prettytable::{Attr, Cell, Row, Table};
 
 pub fn print_rate_table(exchange_rates: Vec<ExchangeRate>) -> () {
@@ -15,7 +16,16 @@ pub fn print_rate_table(exchange_rates: Vec<ExchangeRate>) -> () {
     table.add_row(Row::new(label_cells));
 
     /* Generate Table Body */
-    // for rate in exchange_rates {}
+    for rate in exchange_rates {
+        table.add_row(row![
+            rate.query.id,
+            rate.query.token_in.symbol,
+            rate.query.token_out.symbol,
+            rate.rate.as_u64().to_formatted_string(&Locale::en),
+            rate.query.pool.exchange,
+            rate.query.pool.network
+        ]);
+    }
 
     table.printstd();
 }

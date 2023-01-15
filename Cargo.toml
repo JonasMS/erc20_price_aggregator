@@ -13,3 +13,4 @@ ethers = "1.0.0"
 dotenv = "0.15.0"
 tokio = { version = "1", features = ["full"] }
 prettytable-rs = "0.10.0"
+num-format = "0.4.4"

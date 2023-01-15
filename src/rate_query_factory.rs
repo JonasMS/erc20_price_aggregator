@@ -1,5 +1,6 @@
 use crate::config::TokenPair;
 use std::collections::HashMap;
+use std::fmt;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Network {
@@ -7,10 +8,24 @@ pub enum Network {
     // Polygon,
     // Abitrum,
 }
+
+// TODO find simpler way to impl Display
+impl fmt::Display for Network {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?} ", &self)
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub enum Exchange {
     Uniswap,
     // Balancer,
+}
+
+impl fmt::Display for Exchange {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?} ", &self)
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -18,6 +33,13 @@ pub enum TokenSymbol {
     WETH,
     USDC,
 }
+
+impl fmt::Display for TokenSymbol {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?} ", &self)
+    }
+}
+
 #[derive(Debug)]
 pub struct Token {
     pub address: String,
@@ -35,6 +57,7 @@ pub struct Pool {
 
 #[derive(Debug)]
 pub struct RateQuery {
+    pub id: String,
     pub token_in: Token, // TODO create Address type
     pub token_out: Token,
     pub pool: Pool,
@@ -86,13 +109,14 @@ pub fn get_rate_queries(token_pairs: &Vec<TokenPair>) -> Vec<RateQuery> {
 
     // for each pool in a token pair
     // create a RateQuery
-    for token_pair in token_pairs {
+    for (idx, token_pair) in token_pairs.iter().enumerate() {
         for pool in &token_pair.pools {
             let network = get_network(&pool.network_id);
             let token_in = get_token(&token_pair.token_in.symbol);
             let token_out = get_token(&token_pair.token_out.symbol);
 
             rate_queries.push(RateQuery {
+                id: idx.to_string(),
                 token_in: Token {
                     address: token_symbol_to_address_map
                         .get(&(token_in, network))

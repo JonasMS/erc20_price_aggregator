@@ -28,7 +28,26 @@
                     "network_id": 1,
                     "exchange_id": 0,
                     "address": "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8",
-                    "fee": 0.03
+                    "fee": 3000
+
+                }
+            ]
+		},
+		{
+			"token_in": {
+				"symbol": "WBTC",
+				"decimals": 8
+			},
+			"token_out": {
+				"symbol": "USDC",
+				"decimals": 6
+			},
+            "pools": [
+                {
+                    "network_id": 1,
+                    "exchange_id": 0,
+                    "address": "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
+                    "fee": 3000
 
                 }
             ]

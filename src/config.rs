@@ -20,14 +20,14 @@ pub struct Pool {
     pub network_id: u64,
     pub exchange_id: u64,
     pub address: Option<String>,
-    pub fee: Option<f32>,
+    pub fee: Option<u32>,
 }
 
 // TODO create Address type
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Token {
     pub symbol: String,
-    pub decimals: u64,
+    pub decimals: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

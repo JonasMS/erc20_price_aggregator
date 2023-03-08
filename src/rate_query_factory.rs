@@ -32,6 +32,7 @@ impl fmt::Display for Exchange {
 pub enum TokenSymbol {
     WETH,
     USDC,
+    WBTC,
 }
 
 impl fmt::Display for TokenSymbol {
@@ -44,7 +45,7 @@ impl fmt::Display for TokenSymbol {
 pub struct Token {
     pub address: String,
     pub symbol: TokenSymbol,
-    pub decimals: u64,
+    pub decimals: u32,
 }
 
 #[derive(Debug)]
@@ -52,7 +53,7 @@ pub struct Pool {
     pub network: Network,
     pub exchange: Exchange,
     pub address: Option<String>,
-    pub fee: Option<f32>,
+    pub fee: Option<u32>,
 }
 
 #[derive(Debug)]
@@ -66,6 +67,7 @@ pub struct RateQuery {
 fn get_token_symbol_to_address_map() -> HashMap<(TokenSymbol, Network), String> {
     let mut token_symbol_to_address_map = HashMap::new();
 
+    // TODO automate; populate data from config.json
     token_symbol_to_address_map.insert(
         (TokenSymbol::WETH, Network::Ethereum),
         String::from("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
@@ -73,6 +75,10 @@ fn get_token_symbol_to_address_map() -> HashMap<(TokenSymbol, Network), String> 
     token_symbol_to_address_map.insert(
         (TokenSymbol::USDC, Network::Ethereum),
         String::from("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),
+    );
+    token_symbol_to_address_map.insert(
+        (TokenSymbol::WBTC, Network::Ethereum),
+        String::from("0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"),
     );
 
     token_symbol_to_address_map
@@ -96,6 +102,7 @@ fn get_token(token_symbol: &str) -> TokenSymbol {
     match token_symbol {
         "WETH" => TokenSymbol::WETH,
         "USDC" => TokenSymbol::USDC,
+        "WBTC" => TokenSymbol::WBTC,
         _ => panic!("Token Symbol didn't match: {}", token_symbol),
     }
 }

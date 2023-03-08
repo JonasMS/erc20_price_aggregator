@@ -9,9 +9,10 @@ use std::env;
 use std::sync::Arc;
 
 abigen!(
-    IUniswapV3Pool,
+    IQuoterV2,
     r#"[
-        function slot0() external view returns (uint160 sqrtPriceX96, int24 tick, uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext, uint8 feeProtocol, bool unlocked)
+        struct QuoteExactInputSingleParams {address tokenIn; address tokenOut; uint256 amountIn; uint24 fee; uint160 sqrtPriceLimitX96;}
+        function quoteExactInputSingle(QuoteExactInputSingleParams memory params) external returns (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate)
     ]"#,
 );
 
@@ -22,42 +23,25 @@ pub async fn get_exchange_rate(
     let client = Provider::<Http>::try_from(&rpc_url)?;
     let client = Arc::new(client);
 
-    let address = "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8".parse::<Address>()?;
-    let pool = IUniswapV3Pool::new(address, Arc::clone(&client));
+    let quoter = IQuoterV2::new(
+        "0x61fFE014bA17989E743c5F6cB21bF9697530B21e".parse::<Address>()?,
+        Arc::clone(&client),
+    );
 
-    let (sqrt_price_x96, _a, _b, _c, _d, _e, _f) = pool.slot_0().call().await?;
+    let params = i_quoter_v2::QuoteExactInputSingleParams {
+        token_in: rate_query.token_in.address.parse::<Address>()?,
+        token_out: rate_query.token_out.address.parse::<Address>()?,
+        amount_in: U256::from(1 * (10_u64.pow(rate_query.token_in.decimals))),
+        fee: rate_query.pool.fee.ok_or("Pool fee missing")?,
+        sqrt_price_limit_x96: U256::zero(),
+    };
 
-    let decimal_difference = rate_query
-        .token_in
-        .decimals
-        .abs_diff(rate_query.token_out.decimals);
-    let decimal_difference = U256::from(decimal_difference);
+    let (quote, _a, _b_, _gas_estimate) = quoter.quote_exact_input_single(params).call().await?;
 
-    /* == Exchange Rate Formula ==
-     * Price = 1/P * (10 ** decimal_difference)
-     * where P = (sqrtPriceX96 / 2**96)**2
-     *
-     * Translates to:
-     * Price = (10 ** decimal_difference / P)
-     */
-    let p = sqrt_price_x96
-        .checked_div(
-            U256::from(2)
-                .checked_pow(U256::from(96))
-                .ok_or("Error getting p denominator")?,
-        )
-        .ok_or("Error getting p")?
-        .checked_pow(U256::from(2))
-        .ok_or("Error squaring p")?;
-
-    let price = U256::from(10)
-        .checked_pow(decimal_difference)
-        .ok_or("Error getting 2 ** decimal_difference")?
-        .checked_div(p)
-        .ok_or("Error dividing by p")?;
+    let quote = quote / (10_u32.pow(rate_query.token_out.decimals));
 
     Ok(ExchangeRate {
         query: rate_query,
-        rate: price,
+        rate: quote,
     })
 }
